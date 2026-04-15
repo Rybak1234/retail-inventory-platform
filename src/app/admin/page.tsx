@@ -59,7 +59,7 @@ export default async function AdminDashboard() {
         </div>
         <div className="bg-white rounded-xl border p-5">
           <p className="text-sm text-gray-500">Valor del Inventario</p>
-          <p className="text-2xl font-bold text-indigo-700">${totalValue.toLocaleString("es", { minimumFractionDigits: 2 })}</p>
+          <p className="text-2xl font-bold text-indigo-700">Bs. {totalValue.toLocaleString("es-BO", { minimumFractionDigits: 2 })}</p>
         </div>
         <div className="bg-white rounded-xl border p-5">
           <p className="text-sm text-gray-500">Alertas Stock Bajo</p>
@@ -109,7 +109,7 @@ export default async function AdminDashboard() {
                     <p className="text-sm font-medium text-gray-900">{cat.name}</p>
                     <p className="text-xs text-gray-400">{cat.count} productos · {cat.stock} uds</p>
                   </div>
-                  <span className="text-sm font-semibold text-indigo-700">${cat.value.toLocaleString("es")}</span>
+                  <span className="text-sm font-semibold text-indigo-700">Bs. {cat.value.toLocaleString("es-BO")}</span>
                 </div>
               ))}
             </div>

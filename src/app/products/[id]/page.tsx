@@ -113,7 +113,7 @@ export default function ProductDetailPage() {
         <div className="bg-white rounded-xl border p-5 text-center">
           <p className="text-sm text-gray-500">Valor en Stock</p>
           <p className="text-3xl font-bold text-indigo-700">
-            ${(product.stock * product.price).toFixed(2)}
+            Bs. {(product.stock * product.price).toFixed(2)}
           </p>
         </div>
       </div>

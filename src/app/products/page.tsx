@@ -77,7 +77,7 @@ export default async function ProductsPage() {
                     )}
                   </td>
                   <td className="px-5 py-3 text-right text-sm text-gray-600">
-                    ${product.price.toFixed(2)}
+                    Bs. {product.price.toFixed(2)}
                   </td>
                   <td className="px-5 py-3 text-right">
                     <Link

@@ -28,7 +28,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard de Inventario</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard de Inventario NovaTech</h1>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -49,7 +49,7 @@ export default async function DashboardPage() {
         <div className="bg-white rounded-xl border p-5">
           <p className="text-sm text-gray-500">Valor Total</p>
           <p className="text-3xl font-bold text-indigo-700">
-            ${totalValue.toLocaleString("es", { minimumFractionDigits: 2 })}
+            Bs. {totalValue.toLocaleString("es-BO", { minimumFractionDigits: 2 })}
           </p>
         </div>
       </div>

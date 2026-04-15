@@ -5,8 +5,8 @@ import UserMenu from "@/components/UserMenu";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Inventario - Control de Stock",
-  description: "Control de inventario para tienda y almacén",
+  title: "NovaTech Inventario · Control de Stock",
+  description: "Sistema de control de inventario para NovaTech — gestión de stock, movimientos y alertas",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
             <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
               <Link href="/" className="text-lg font-bold text-indigo-700">
-                📦 StockControl
+                📦 NovaTech Inventario
               </Link>
               <div className="flex gap-4 text-sm items-center">
                 <Link href="/" className="text-gray-600 hover:text-indigo-700 transition">

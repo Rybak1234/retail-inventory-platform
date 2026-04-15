@@ -15,30 +15,34 @@ async function main() {
   const employeePass = await bcrypt.hash("employee123", 12);
 
   const admin = await prisma.user.create({
-    data: { email: "admin@stockcontrol.com", password: adminPass, name: "Administrador", role: "admin" },
+    data: { email: "admin@novatech.bo", password: adminPass, name: "Administrador", role: "admin" },
   });
   const manager = await prisma.user.create({
-    data: { email: "gestor@stockcontrol.com", password: managerPass, name: "María García", role: "manager" },
+    data: { email: "gestor@novatech.bo", password: managerPass, name: "María García", role: "manager" },
   });
   const employee = await prisma.user.create({
-    data: { email: "empleado@stockcontrol.com", password: employeePass, name: "Carlos López", role: "employee" },
+    data: { email: "empleado@novatech.bo", password: employeePass, name: "Carlos López", role: "employee" },
   });
 
   console.log(`✅ Created 3 users (admin, manager, employee)`);
 
   const products = [
-    { name: "Laptop HP ProBook 450", sku: "LAP-HP-001", category: "Electrónica", unit: "unidad", price: 12500, stock: 15, minStock: 5, description: "Laptop empresarial i5, 16GB RAM, 512GB SSD" },
-    { name: "Monitor Dell 24\" FHD", sku: "MON-DL-001", category: "Electrónica", unit: "unidad", price: 3200, stock: 22, minStock: 8, description: "Monitor IPS Full HD 24 pulgadas" },
-    { name: "Teclado Logitech K380", sku: "TEC-LG-001", category: "Periféricos", unit: "unidad", price: 650, stock: 45, minStock: 15, description: "Teclado Bluetooth multi-dispositivo" },
-    { name: "Mouse Logitech M720", sku: "MOU-LG-001", category: "Periféricos", unit: "unidad", price: 890, stock: 3, minStock: 10, description: "Mouse inalámbrico ergonómico" },
-    { name: "Cable HDMI 2.0 (2m)", sku: "CAB-HD-001", category: "Cables", unit: "unidad", price: 120, stock: 80, minStock: 20, description: "Cable HDMI de alta velocidad 4K" },
-    { name: "Cable USB-C (1m)", sku: "CAB-UC-001", category: "Cables", unit: "unidad", price: 85, stock: 120, minStock: 30, description: "Cable USB tipo C carga rápida" },
-    { name: "Webcam Logitech C920", sku: "CAM-LG-001", category: "Periféricos", unit: "unidad", price: 1450, stock: 2, minStock: 5, description: "Webcam Full HD 1080p" },
-    { name: "Docking Station USB-C", sku: "DOC-GN-001", category: "Electrónica", unit: "unidad", price: 2800, stock: 8, minStock: 3, description: "Hub USB-C 12 en 1" },
-    { name: "Resma Papel A4 (500h)", sku: "PAP-A4-001", category: "Papelería", unit: "resma", price: 65, stock: 200, minStock: 50, description: "Papel bond A4 75g" },
-    { name: "Tóner HP 26A", sku: "TON-HP-001", category: "Papelería", unit: "unidad", price: 580, stock: 12, minStock: 5, description: "Tóner original para HP LaserJet" },
-    { name: "Silla Ergonómica Pro", sku: "SIL-ER-001", category: "Mobiliario", unit: "unidad", price: 4500, stock: 6, minStock: 2, description: "Silla de oficina con soporte lumbar" },
-    { name: "Escritorio Ajustable", sku: "ESC-AJ-001", category: "Mobiliario", unit: "unidad", price: 7800, stock: 4, minStock: 2, description: "Escritorio sit-stand eléctrico 120x60cm" },
+    { name: "Audífonos Bluetooth Pro ANC", sku: "AUD-BT-001", category: "Audio", unit: "unidad", price: 289, stock: 25, minStock: 8, description: "Audífonos con cancelación de ruido, 30h batería" },
+    { name: "Earbuds TWS Sport", sku: "AUD-TW-001", category: "Audio", unit: "unidad", price: 149, stock: 40, minStock: 12, description: "Auriculares true wireless IPX5" },
+    { name: "Parlante Bluetooth Portátil", sku: "AUD-PB-001", category: "Audio", unit: "unidad", price: 199, stock: 30, minStock: 10, description: "Altavoz 20W IPX7, 12h batería" },
+    { name: "Cargador Rápido 65W GaN", sku: "ENE-CG-001", category: "Energía", unit: "unidad", price: 179, stock: 35, minStock: 10, description: "GaN 65W, 2x USB-C + 1x USB-A" },
+    { name: "Power Bank 20000mAh", sku: "ENE-PB-001", category: "Energía", unit: "unidad", price: 159, stock: 28, minStock: 8, description: "PD 22.5W, pantalla LED, 3 puertos" },
+    { name: "Base Carga Inalámbrica 15W", sku: "ENE-QI-001", category: "Energía", unit: "unidad", price: 89, stock: 45, minStock: 15, description: "Cargador Qi 15W ultra delgado" },
+    { name: "Hub USB-C 7 en 1", sku: "ACC-HB-001", category: "Accesorios PC", unit: "unidad", price: 189, stock: 22, minStock: 8, description: "HDMI 4K, 3x USB 3.0, SD, PD 100W" },
+    { name: "Teclado Mecánico RGB", sku: "ACC-TM-001", category: "Accesorios PC", unit: "unidad", price: 349, stock: 15, minStock: 5, description: "65%, switches intercambiables, aluminio" },
+    { name: "Mouse Ergonómico Vertical", sku: "ACC-ME-001", category: "Accesorios PC", unit: "unidad", price: 129, stock: 3, minStock: 10, description: "2.4GHz + BT, 2400 DPI" },
+    { name: "Soporte Laptop Aluminio", sku: "ACC-SL-001", category: "Accesorios PC", unit: "unidad", price: 139, stock: 20, minStock: 6, description: "Ajustable 10-17 pulgadas" },
+    { name: "Cable USB-C Trenzado 2m", sku: "CAB-UC-001", category: "Cables", unit: "unidad", price: 45, stock: 80, minStock: 25, description: "100W PD, nailon trenzado" },
+    { name: "Cable HDMI 2.1 4K 2m", sku: "CAB-HD-001", category: "Cables", unit: "unidad", price: 69, stock: 50, minStock: 15, description: "4K@120Hz, 8K@60Hz" },
+    { name: "Ring Light LED 10\"", sku: "STR-RL-001", category: "Streaming", unit: "unidad", price: 119, stock: 18, minStock: 5, description: "Trípode + soporte celular, 3 modos" },
+    { name: "Webcam Full HD 1080p", sku: "STR-WC-001", category: "Streaming", unit: "unidad", price: 199, stock: 2, minStock: 5, description: "Autofoco, mic dual" },
+    { name: "Funda Laptop Neopreno 15.6\"", sku: "PRO-FL-001", category: "Protección", unit: "unidad", price: 79, stock: 33, minStock: 10, description: "Resistente al agua, bolsillo exterior" },
+    { name: "Mochila Tech Antirrobo", sku: "PRO-MA-001", category: "Protección", unit: "unidad", price: 249, stock: 15, minStock: 5, description: "Puerto USB, cierre oculto, 15.6\"" },
   ];
 
   const userIds = [admin.id, manager.id, employee.id];

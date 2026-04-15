@@ -70,7 +70,7 @@ export default async function ReportsPage() {
         </div>
         <div className="bg-white rounded-xl border p-5">
           <p className="text-sm text-gray-500">Valor Inventario</p>
-          <p className="text-2xl font-bold text-indigo-700">${totalValue.toLocaleString("es", { minimumFractionDigits: 2 })}</p>
+          <p className="text-2xl font-bold text-indigo-700">Bs. {totalValue.toLocaleString("es-BO", { minimumFractionDigits: 2 })}</p>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export default async function ReportsPage() {
                     <td className="px-4 py-3 font-medium">{r.name}</td>
                     <td className="px-4 py-3 text-right text-gray-500">{r.products}</td>
                     <td className="px-4 py-3 text-right">{r.stock}</td>
-                    <td className="px-4 py-3 text-right text-indigo-700">${r.value.toLocaleString("es")}</td>
+                    <td className="px-4 py-3 text-right text-indigo-700">Bs. {r.value.toLocaleString("es-BO")}</td>
                     <td className="px-4 py-3 text-right">
                       <span className="text-green-600">{r.entries}</span> / <span className="text-red-600">{r.exits}</span>
                     </td>
@@ -165,9 +165,9 @@ export default async function ReportsPage() {
                     <p className="text-xs text-gray-400">{p.sku}</p>
                   </td>
                   <td className="px-5 py-3 text-gray-500">{p.category}</td>
-                  <td className="px-5 py-3 text-right">${p.price.toLocaleString("es")}</td>
+                  <td className="px-5 py-3 text-right">Bs. {p.price.toLocaleString("es-BO")}</td>
                   <td className="px-5 py-3 text-right">{p.stock}</td>
-                  <td className="px-5 py-3 text-right font-bold text-indigo-700">${(p.stock * p.price).toLocaleString("es", { minimumFractionDigits: 2 })}</td>
+                  <td className="px-5 py-3 text-right font-bold text-indigo-700">Bs. {(p.stock * p.price).toLocaleString("es-BO", { minimumFractionDigits: 2 })}</td>
                 </tr>
               ))}
             </tbody>
