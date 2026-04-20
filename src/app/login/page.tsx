@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -44,7 +44,7 @@ function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               placeholder="tu@email.com"
             />
           </div>
@@ -55,24 +55,35 @@ function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
               placeholder="••••••••"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 font-medium"
+            className="w-full bg-brand-600 text-white py-2.5 rounded-lg hover:bg-brand-700 transition disabled:opacity-50 font-medium"
           >
             {loading ? "Entrando..." : "Entrar"}
           </button>
         </form>
-        <p className="mt-4 text-center text-sm text-gray-500">
-          ¿No tienes cuenta?{" "}
-          <Link href="/register" className="text-indigo-600 hover:underline">
-            Regístrate
-          </Link>
-        </p>
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Credenciales de acceso</p>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Admin:</span>
+              <code className="bg-white px-2 py-0.5 rounded border text-xs">inv-admin@surtibolivia.bo / admin123</code>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Empleado:</span>
+              <code className="bg-white px-2 py-0.5 rounded border text-xs">empleado@surtibolivia.bo / emp123</code>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-gray-600">Gestor:</span>
+              <code className="bg-white px-2 py-0.5 rounded border text-xs">inv-gestor@surtibolivia.bo / manager123</code>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

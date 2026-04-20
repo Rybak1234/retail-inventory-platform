@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
@@ -18,10 +18,10 @@ export default function NewProductPage() {
       sku: form.get("sku"),
       description: form.get("description"),
       category: form.get("category"),
-      unit: form.get("unit"),
       price: form.get("price"),
       stock: form.get("stock"),
-      minStock: form.get("minStock"),
+      minStock: form.get("lowStockThreshold"),
+      image: form.get("image") || null,
     };
 
     const res = await fetch("/api/products", {
@@ -48,54 +48,59 @@ export default function NewProductPage() {
       <form onSubmit={handleSubmit} className="space-y-5 bg-white p-6 rounded-xl border">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-          <input name="name" required className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Nombre del producto" />
+          <input name="name" required className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Nombre del producto" />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
-            <input name="sku" required className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none font-mono" placeholder="PRD-001" />
+            <input name="sku" required className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none font-mono" placeholder="PRD-001" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
-            <select name="category" required className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <select name="category" required className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
               <option value="">Seleccionar</option>
+              <option value="Abarrotes">Abarrotes</option>
+              <option value="Lácteos y Huevos">Lácteos y Huevos</option>
+              <option value="Carnes y Embutidos">Carnes y Embutidos</option>
+              <option value="Frutas y Verduras">Frutas y Verduras</option>
+              <option value="Panadería">Panadería</option>
+              <option value="Bebidas">Bebidas</option>
+              <option value="Limpieza y Hogar">Limpieza y Hogar</option>
+              <option value="Cuidado Personal">Cuidado Personal</option>
+              <option value="Moda Boliviana">Moda Boliviana</option>
               <option value="Electrónica">Electrónica</option>
-              <option value="Ropa">Ropa</option>
-              <option value="Alimentos">Alimentos</option>
-              <option value="Hogar">Hogar</option>
-              <option value="Herramientas">Herramientas</option>
-              <option value="Otro">Otro</option>
             </select>
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-          <textarea name="description" rows={2} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-y" placeholder="Descripción opcional" />
+          <textarea name="description" rows={2} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none resize-y" placeholder="Descripción opcional" />
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Unidad</label>
-            <input name="unit" defaultValue="unidad" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">URL de Imagen</label>
+          <input name="image" type="url" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="https://images.unsplash.com/..." />
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Precio</label>
-            <input name="price" type="number" step="0.01" min="0" defaultValue="0" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            <input name="price" type="number" step="0.01" min="0" defaultValue="0" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Stock Inicial</label>
-            <input name="stock" type="number" min="0" defaultValue="0" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            <input name="stock" type="number" min="0" defaultValue="0" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Stock Mínimo</label>
-            <input name="minStock" type="number" min="0" defaultValue="5" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" />
+            <input name="lowStockThreshold" type="number" min="0" defaultValue="5" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 outline-none" />
           </div>
         </div>
 
         <div className="flex gap-3 pt-2">
-          <button type="submit" disabled={saving} className="bg-indigo-600 text-white px-6 py-2.5 rounded-lg hover:bg-indigo-700 transition text-sm font-medium disabled:opacity-50">
+          <button type="submit" disabled={saving} className="bg-brand-600 text-white px-6 py-2.5 rounded-lg hover:bg-brand-700 transition text-sm font-medium disabled:opacity-50">
             {saving ? "Guardando..." : "Crear Producto"}
           </button>
           <button type="button" onClick={() => router.push("/products")} className="border border-gray-300 text-gray-700 px-6 py-2.5 rounded-lg hover:bg-gray-50 transition text-sm">

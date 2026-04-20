@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 
@@ -7,7 +7,6 @@ interface User {
   email: string;
   name: string;
   role: string;
-  active: boolean;
   createdAt: string;
 }
 
@@ -36,19 +35,16 @@ export default function AdminUsersPage() {
       return;
     }
     const user = await res.json();
-    setUsers([{ ...user, active: true, createdAt: new Date().toISOString() }, ...users]);
+    setUsers([{ ...user, createdAt: new Date().toISOString() }, ...users]);
     setShowForm(false);
     setForm({ name: "", email: "", password: "", role: "employee" });
   }
 
-  async function toggleActive(user: User) {
-    const res = await fetch(`/api/users/${user.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ active: !user.active }),
-    });
+  async function deleteUser(user: User) {
+    if (!confirm(`¿Eliminar a ${user.name}?`)) return;
+    const res = await fetch(`/api/users/${user.id}`, { method: "DELETE" });
     if (res.ok) {
-      setUsers(users.map((u) => (u.id === user.id ? { ...u, active: !u.active } : u)));
+      setUsers(users.filter((u) => u.id !== user.id));
     }
   }
 
@@ -71,7 +67,7 @@ export default function AdminUsersPage() {
         <h1 className="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition"
+          className="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-brand-700 transition"
         >
           {showForm ? "Cancelar" : "+ Nuevo Usuario"}
         </button>
@@ -126,7 +122,7 @@ export default function AdminUsersPage() {
               </select>
             </div>
             <div className="col-span-2">
-              <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-indigo-700 transition">
+              <button type="submit" className="bg-brand-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-brand-700 transition">
                 Crear Usuario
               </button>
             </div>
@@ -148,7 +144,7 @@ export default function AdminUsersPage() {
           </thead>
           <tbody className="divide-y">
             {users.map((u) => (
-              <tr key={u.id} className={`hover:bg-gray-50 ${!u.active ? "opacity-50" : ""}`}>
+              <tr key={u.id} className="hover:bg-gray-50">
                 <td className="px-5 py-3 font-medium text-gray-900">{u.name}</td>
                 <td className="px-5 py-3 text-gray-500">{u.email}</td>
                 <td className="px-5 py-3">
@@ -163,17 +159,17 @@ export default function AdminUsersPage() {
                   </select>
                 </td>
                 <td className="px-5 py-3">
-                  <span className={`px-2 py-1 rounded text-xs ${u.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-                    {u.active ? "Activo" : "Inactivo"}
+                  <span className="px-2 py-1 rounded text-xs bg-green-100 text-green-700">
+                    Activo
                   </span>
                 </td>
                 <td className="px-5 py-3 text-gray-400">{new Date(u.createdAt).toLocaleDateString("es")}</td>
                 <td className="px-5 py-3">
                   <button
-                    onClick={() => toggleActive(u)}
-                    className={`text-xs px-3 py-1 rounded ${u.active ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"} transition`}
+                    onClick={() => deleteUser(u)}
+                    className="text-xs px-3 py-1 rounded text-red-600 hover:bg-red-50 transition"
                   >
-                    {u.active ? "Desactivar" : "Activar"}
+                    Eliminar
                   </button>
                 </td>
               </tr>

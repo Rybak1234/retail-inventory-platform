@@ -13,12 +13,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const data: Record<string, unknown> = {};
   if (body.name !== undefined) data.name = body.name;
   if (body.role !== undefined) data.role = body.role;
-  if (body.active !== undefined) data.active = body.active;
 
   const user = await prisma.user.update({
     where: { id: params.id },
     data,
-    select: { id: true, email: true, name: true, role: true, active: true },
+    select: { id: true, email: true, name: true, role: true },
   });
 
   return NextResponse.json(user);
@@ -30,10 +29,9 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
   }
 
-  await prisma.user.update({
+  await prisma.user.delete({
     where: { id: params.id },
-    data: { active: false },
   });
 
-  return NextResponse.json({ message: "Usuario desactivado" });
+  return NextResponse.json({ message: "Usuario eliminado" });
 }

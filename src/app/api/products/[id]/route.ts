@@ -19,10 +19,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       name: body.name,
       sku: body.sku,
       description: body.description,
-      category: body.category,
-      unit: body.unit,
+      categoryName: body.category || body.categoryName,
+      categoryId: body.categoryId || undefined,
       price: parseFloat(body.price) || 0,
-      minStock: parseInt(body.minStock) || 5,
+      image: body.image !== undefined ? (body.image || null) : undefined,
+      lowStockThreshold: parseInt(body.minStock || body.lowStockThreshold) || 5,
     },
   });
 

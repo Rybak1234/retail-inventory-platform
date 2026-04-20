@@ -1,7 +1,8 @@
-import { getServerSession } from "next-auth";
+﻿import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { BarChart3, RefreshCw } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -12,16 +13,16 @@ export default async function ReportsPage() {
   const [products, movements] = await Promise.all([
     prisma.product.findMany(),
     prisma.movement.findMany({
-      include: { product: { select: { name: true, sku: true, category: true } } },
+      include: { product: { select: { name: true, sku: true, categoryName: true } } },
       orderBy: { createdAt: "desc" },
     }),
   ]);
 
   // Category report
-  const categories = [...new Set(products.map((p) => p.category))];
+  const categories = [...new Set(products.map((p) => p.categoryName))];
   const categoryReport = categories.map((cat) => {
-    const items = products.filter((p) => p.category === cat);
-    const catMovements = movements.filter((m) => m.product.category === cat);
+    const items = products.filter((p) => p.categoryName === cat);
+    const catMovements = movements.filter((m) => m.product.categoryName === cat);
     const entries = catMovements.filter((m) => m.type === "entry").reduce((s, m) => s + m.quantity, 0);
     const exits = catMovements.filter((m) => m.type === "exit").reduce((s, m) => s + m.quantity, 0);
     return {
@@ -70,7 +71,7 @@ export default async function ReportsPage() {
         </div>
         <div className="bg-white rounded-xl border p-5">
           <p className="text-sm text-gray-500">Valor Inventario</p>
-          <p className="text-2xl font-bold text-indigo-700">Bs. {totalValue.toLocaleString("es-BO", { minimumFractionDigits: 2 })}</p>
+          <p className="text-2xl font-bold text-brand-700">Bs. {totalValue.toLocaleString("es-BO", { minimumFractionDigits: 2 })}</p>
         </div>
       </div>
 
@@ -78,7 +79,7 @@ export default async function ReportsPage() {
         {/* Category Report */}
         <div className="bg-white rounded-xl border">
           <div className="px-5 py-4 border-b">
-            <h2 className="font-semibold text-gray-900">📊 Reporte por Categoría</h2>
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-brand-600" /> Reporte por Categoría</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -97,7 +98,7 @@ export default async function ReportsPage() {
                     <td className="px-4 py-3 font-medium">{r.name}</td>
                     <td className="px-4 py-3 text-right text-gray-500">{r.products}</td>
                     <td className="px-4 py-3 text-right">{r.stock}</td>
-                    <td className="px-4 py-3 text-right text-indigo-700">Bs. {r.value.toLocaleString("es-BO")}</td>
+                    <td className="px-4 py-3 text-right text-brand-700">Bs. {r.value.toLocaleString("es-BO")}</td>
                     <td className="px-4 py-3 text-right">
                       <span className="text-green-600">{r.entries}</span> / <span className="text-red-600">{r.exits}</span>
                     </td>
@@ -111,7 +112,7 @@ export default async function ReportsPage() {
         {/* Top Movers */}
         <div className="bg-white rounded-xl border">
           <div className="px-5 py-4 border-b">
-            <h2 className="font-semibold text-gray-900">🔄 Productos Más Activos</h2>
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2"><RefreshCw className="w-4 h-4 text-brand-600" /> Productos Más Activos</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -144,7 +145,7 @@ export default async function ReportsPage() {
       {/* Highest Value Products */}
       <div className="bg-white rounded-xl border">
         <div className="px-5 py-4 border-b">
-          <h2 className="font-semibold text-gray-900">💰 Productos de Mayor Valor en Inventario</h2>
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-amber-500" /> Productos de Mayor Valor en Inventario</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -164,10 +165,10 @@ export default async function ReportsPage() {
                     <p className="font-medium">{p.name}</p>
                     <p className="text-xs text-gray-400">{p.sku}</p>
                   </td>
-                  <td className="px-5 py-3 text-gray-500">{p.category}</td>
+                  <td className="px-5 py-3 text-gray-500">{p.categoryName}</td>
                   <td className="px-5 py-3 text-right">Bs. {p.price.toLocaleString("es-BO")}</td>
                   <td className="px-5 py-3 text-right">{p.stock}</td>
-                  <td className="px-5 py-3 text-right font-bold text-indigo-700">Bs. {(p.stock * p.price).toLocaleString("es-BO", { minimumFractionDigits: 2 })}</td>
+                  <td className="px-5 py-3 text-right font-bold text-brand-700">Bs. {(p.stock * p.price).toLocaleString("es-BO", { minimumFractionDigits: 2 })}</td>
                 </tr>
               ))}
             </tbody>

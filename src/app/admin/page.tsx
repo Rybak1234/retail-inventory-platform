@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { AlertTriangle, BarChart3, Users, ClipboardList } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -13,19 +14,19 @@ export default async function AdminDashboard() {
   const [products, movements, users, lowStockProducts] = await Promise.all([
     prisma.product.findMany(),
     prisma.movement.findMany({ orderBy: { createdAt: "desc" }, take: 15, include: { product: { select: { name: true, sku: true } }, user: { select: { name: true } } } }),
-    prisma.user.findMany({ select: { id: true, name: true, email: true, role: true, active: true, createdAt: true }, orderBy: { createdAt: "desc" } }),
-    prisma.product.findMany({ where: { stock: { lte: prisma.product.fields?.minStock as unknown as number } } }).catch(() => []),
+    prisma.user.findMany({ select: { id: true, name: true, email: true, role: true, createdAt: true }, orderBy: { createdAt: "desc" } }),
+    prisma.product.findMany({ where: { stock: { lte: 5 } } }).catch(() => []),
   ]);
 
   const totalProducts = products.length;
   const totalStock = products.reduce((s, p) => s + p.stock, 0);
   const totalValue = products.reduce((s, p) => s + p.stock * p.price, 0);
-  const lowStock = products.filter((p) => p.stock <= p.minStock);
-  const activeUsers = users.filter((u) => u.active).length;
+  const lowStock = products.filter((p) => p.stock <= p.lowStockThreshold);
+  const activeUsers = users.length;
 
-  const categories = [...new Set(products.map((p) => p.category))];
+  const categories = [...new Set(products.map((p) => p.categoryName))];
   const categoryStats = categories.map((cat) => {
-    const items = products.filter((p) => p.category === cat);
+    const items = products.filter((p) => p.categoryName === cat);
     return { name: cat, count: items.length, stock: items.reduce((s, p) => s + p.stock, 0), value: items.reduce((s, p) => s + p.stock * p.price, 0) };
   }).sort((a, b) => b.value - a.value);
 
@@ -38,7 +39,7 @@ export default async function AdminDashboard() {
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Panel de Administración</h1>
         <div className="flex gap-2">
-          <Link href="/admin/users" className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition">
+          <Link href="/admin/users" className="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-brand-700 transition">
             Gestionar Usuarios
           </Link>
           <Link href="/admin/reports" className="bg-white border text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-50 transition">
@@ -59,7 +60,7 @@ export default async function AdminDashboard() {
         </div>
         <div className="bg-white rounded-xl border p-5">
           <p className="text-sm text-gray-500">Valor del Inventario</p>
-          <p className="text-2xl font-bold text-indigo-700">Bs. {totalValue.toLocaleString("es-BO", { minimumFractionDigits: 2 })}</p>
+          <p className="text-2xl font-bold text-brand-700">Bs. {totalValue.toLocaleString("es-BO", { minimumFractionDigits: 2 })}</p>
         </div>
         <div className="bg-white rounded-xl border p-5">
           <p className="text-sm text-gray-500">Alertas Stock Bajo</p>
@@ -75,7 +76,7 @@ export default async function AdminDashboard() {
         {/* Low Stock Alerts */}
         <div className="bg-white rounded-xl border">
           <div className="px-5 py-4 border-b">
-            <h2 className="font-semibold text-gray-900">⚠️ Stock Bajo ({lowStock.length})</h2>
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-amber-500" /> Stock Bajo ({lowStock.length})</h2>
           </div>
           <div className="p-5 max-h-64 overflow-y-auto">
             {lowStock.length === 0 ? (
@@ -88,7 +89,7 @@ export default async function AdminDashboard() {
                       <p className="text-sm font-medium text-gray-900">{p.name}</p>
                       <p className="text-xs text-gray-400">{p.sku}</p>
                     </div>
-                    <span className="text-sm font-bold text-red-600">{p.stock} / {p.minStock}</span>
+                    <span className={`text-sm font-bold text-red-600`}>{p.stock} / {p.lowStockThreshold}</span>
                   </Link>
                 ))}
               </div>
@@ -99,7 +100,7 @@ export default async function AdminDashboard() {
         {/* Category Breakdown */}
         <div className="bg-white rounded-xl border">
           <div className="px-5 py-4 border-b">
-            <h2 className="font-semibold text-gray-900">📊 Por Categoría</h2>
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-brand-600" /> Por Categoría</h2>
           </div>
           <div className="p-5">
             <div className="space-y-3">
@@ -109,7 +110,7 @@ export default async function AdminDashboard() {
                     <p className="text-sm font-medium text-gray-900">{cat.name}</p>
                     <p className="text-xs text-gray-400">{cat.count} productos · {cat.stock} uds</p>
                   </div>
-                  <span className="text-sm font-semibold text-indigo-700">Bs. {cat.value.toLocaleString("es-BO")}</span>
+                  <span className="text-sm font-semibold text-brand-700">Bs. {cat.value.toLocaleString("es-BO")}</span>
                 </div>
               ))}
             </div>
@@ -119,8 +120,8 @@ export default async function AdminDashboard() {
         {/* Users Summary */}
         <div className="bg-white rounded-xl border">
           <div className="px-5 py-4 border-b flex items-center justify-between">
-            <h2 className="font-semibold text-gray-900">👥 Usuarios</h2>
-            <Link href="/admin/users" className="text-sm text-indigo-600 hover:underline">Ver todos</Link>
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2"><Users className="w-4 h-4 text-brand-600" /> Usuarios</h2>
+            <Link href="/admin/users" className="text-sm text-brand-600 hover:underline">Ver todos</Link>
           </div>
           <div className="p-5 max-h-64 overflow-y-auto">
             <div className="space-y-3">
@@ -132,7 +133,7 @@ export default async function AdminDashboard() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs px-2 py-0.5 rounded capitalize ${u.role === "admin" ? "bg-purple-100 text-purple-700" : u.role === "manager" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600"}`}>{u.role}</span>
-                    <span className={`w-2 h-2 rounded-full ${u.active ? "bg-green-500" : "bg-gray-300"}`}></span>
+                    <span className={`w-2 h-2 rounded-full bg-green-500`}></span>
                   </div>
                 </div>
               ))}
@@ -144,13 +145,13 @@ export default async function AdminDashboard() {
       {/* Recent Movements */}
       <div className="bg-white rounded-xl border">
         <div className="px-5 py-4 border-b flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">
-            📋 Movimientos Recientes
+          <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+            <ClipboardList className="w-4 h-4 text-brand-600" /> Movimientos Recientes
             <span className="ml-3 text-xs font-normal text-gray-400">
               {entryCount} entradas · {exitCount} salidas (últimos 15)
             </span>
           </h2>
-          <Link href="/movements" className="text-sm text-indigo-600 hover:underline">Ver todos</Link>
+          <Link href="/movements" className="text-sm text-brand-600 hover:underline">Ver todos</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

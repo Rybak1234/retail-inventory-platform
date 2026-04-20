@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { AlertTriangle, ClipboardList, BarChart3, Package, Layers, DollarSign } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -13,12 +14,12 @@ export default async function DashboardPage() {
 
   const totalProducts = products.length;
   const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
-  const lowStockItems = products.filter((p) => p.stock <= p.minStock);
+  const lowStockItems = products.filter((p) => p.stock <= p.lowStockThreshold);
   const totalValue = products.reduce((sum, p) => sum + p.stock * p.price, 0);
 
-  const categories = [...new Set(products.map((p) => p.category))];
+  const categories = [...new Set(products.map((p) => p.categoryName))];
   const categoryStats = categories.map((cat) => {
-    const items = products.filter((p) => p.category === cat);
+    const items = products.filter((p) => p.categoryName === cat);
     return {
       name: cat,
       count: items.length,
@@ -28,7 +29,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard de Inventario NovaTech</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dashboard de Inventario</h1>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -48,7 +49,7 @@ export default async function DashboardPage() {
         </div>
         <div className="bg-white rounded-xl border p-5">
           <p className="text-sm text-gray-500">Valor Total</p>
-          <p className="text-3xl font-bold text-indigo-700">
+          <p className="text-3xl font-bold text-brand-700">
             Bs. {totalValue.toLocaleString("es-BO", { minimumFractionDigits: 2 })}
           </p>
         </div>
@@ -58,8 +59,8 @@ export default async function DashboardPage() {
         {/* Alertas de stock bajo */}
         <div className="bg-white rounded-xl border">
           <div className="px-5 py-4 border-b flex items-center justify-between">
-            <h2 className="font-semibold text-gray-900">⚠️ Alertas de Stock Bajo</h2>
-            <Link href="/products" className="text-sm text-indigo-600 hover:underline">
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-amber-500" /> Alertas de Stock Bajo</h2>
+            <Link href="/products" className="text-sm text-brand-600 hover:underline">
               Ver todos
             </Link>
           </div>
@@ -76,7 +77,7 @@ export default async function DashboardPage() {
                     </div>
                     <div className="text-right">
                       <span className="text-sm font-bold text-red-600">{p.stock}</span>
-                      <span className="text-xs text-gray-400"> / min {p.minStock}</span>
+                      <span className="text-xs text-gray-400"> / min {p.lowStockThreshold}</span>
                     </div>
                   </div>
                 ))}
@@ -88,8 +89,8 @@ export default async function DashboardPage() {
         {/* Últimos movimientos */}
         <div className="bg-white rounded-xl border">
           <div className="px-5 py-4 border-b flex items-center justify-between">
-            <h2 className="font-semibold text-gray-900">📋 Últimos Movimientos</h2>
-            <Link href="/movements" className="text-sm text-indigo-600 hover:underline">
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2"><ClipboardList className="w-4 h-4 text-brand-600" /> Últimos Movimientos</h2>
+            <Link href="/movements" className="text-sm text-brand-600 hover:underline">
               Ver todos
             </Link>
           </div>
@@ -123,7 +124,7 @@ export default async function DashboardPage() {
         {/* Por categoría */}
         <div className="bg-white rounded-xl border lg:col-span-2">
           <div className="px-5 py-4 border-b">
-            <h2 className="font-semibold text-gray-900">📊 Stock por Categoría</h2>
+            <h2 className="font-semibold text-gray-900 flex items-center gap-2"><BarChart3 className="w-4 h-4 text-brand-600" /> Stock por Categoría</h2>
           </div>
           <div className="p-5">
             {categoryStats.length === 0 ? (
@@ -133,7 +134,7 @@ export default async function DashboardPage() {
                 {categoryStats.map((cat) => (
                   <div key={cat.name} className="bg-gray-50 rounded-lg p-4 text-center">
                     <p className="text-sm font-medium text-gray-700">{cat.name}</p>
-                    <p className="text-xl font-bold text-indigo-600">{cat.stock}</p>
+                    <p className="text-xl font-bold text-brand-600">{cat.stock}</p>
                     <p className="text-xs text-gray-400">{cat.count} productos</p>
                   </div>
                 ))}
