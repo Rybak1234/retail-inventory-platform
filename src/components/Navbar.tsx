@@ -39,6 +39,9 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const role = (session?.user as { role?: string })?.role;
 
+  // Hide navbar on login page
+  if (pathname === "/login") return null;
+
   const allLinks = [
     ...navLinks,
     ...(role === "admin" ? [{ href: "/admin", label: "Admin", icon: Shield }] : []),
